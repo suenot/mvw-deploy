@@ -1,0 +1,49 @@
+# Production Warehouse on Server 1: media/prompts storage (nginx behind Traefik) + daily parsers.
+# Layout on the server: /home/suenot/production-warehouse/{warehouse,src,deploy}. Code in src/ is a plain copy (see deploy.sh).
+x-logging: &logging
+  driver: json-file
+  options: {max-size: "10m", max-file: "3"}
+
+services:
+  media:
+    image: nginx:1.29-alpine
+    restart: unless-stopped
+    volumes:
+      - ../warehouse:/srv/warehouse:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [web]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web
+      - traefik.http.routers.pw-media.rule=Host(`media.production-warehouse.suenot.com`)
+      - traefik.http.routers.pw-media.entrypoints=websecure
+      - traefik.http.routers.pw-media.tls.certresolver=letsencrypt
+      - traefik.http.services.pw-media.loadbalancer.server.port=8080
+    healthcheck:
+      test: [CMD-SHELL, "wget -q -O /dev/null http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    logging: *logging
+
+  # Runs every parser once a day, then rebuilds items.json (the catalog index the site reads).
+  parsers:
+    image: python:3.12-slim
+    restart: unless-stopped
+    working_dir: /src
+    environment:
+      MVW_DATA: /warehouse
+      PYTHONPATH: /src/mvw-core:/src/mvw-viewer
+      PYTHONUNBUFFERED: "1"
+      INTERVAL_SECONDS: "86400"
+    volumes:
+      - ../warehouse:/warehouse
+      - ../src:/src:ro
+      - ./parsers-loop.sh:/parsers-loop.sh:ro
+    command: ["sh", "/parsers-loop.sh"]
+    networks: [web]
+    logging: *logging
+
+networks:
+  web:
+    external: true
