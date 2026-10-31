@@ -7,3 +7,13 @@ Docker compose for Server 1 (`/home/suenot/production-warehouse`): nginx media h
 ```
 
 Data lives in `warehouse/` on the server and is never overwritten.
+
+## Parsers that Server 1 cannot reach
+
+`skillry` and `higgsfield` time out on TLS from Server 1. `mac-sync.sh` runs them on the Mac, rsyncs the warehouse to the server and rebuilds `items.json`. Schedule it daily with the launchd agent in `com.suenot.mvw-mac-sync.plist` (04:30):
+
+```bash
+cp com.suenot.mvw-mac-sync.plist ~/Library/LaunchAgents/ && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.suenot.mvw-mac-sync.plist
+```
+
+Log: `~/Library/Logs/mvw-mac-sync.log`. The Mac must be on.

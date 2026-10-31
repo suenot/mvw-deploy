@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.suenot.mvw-mac-sync</string>
+  <key>ProgramArguments</key><array><string>/bin/sh</string><string>/Users/suenot/projects/sdvg/motion-videos-warehouse/mvw-deploy/mac-sync.sh</string></array>
+  <key>StartCalendarInterval</key><dict><key>Hour</key><integer>4</integer><key>Minute</key><integer>30</integer></dict>
+  <key>StandardOutPath</key><string>/Users/suenot/Library/Logs/mvw-mac-sync.log</string>
+  <key>StandardErrorPath</key><string>/Users/suenot/Library/Logs/mvw-mac-sync.log</string>
+</dict></plist>
