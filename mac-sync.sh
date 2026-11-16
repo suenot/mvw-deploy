@@ -4,7 +4,8 @@
 set -u
 WS="$(cd "$(dirname "$0")/.." && pwd)"
 export MVW_DATA="$WS/warehouse" PYTHONPATH="$WS/mvw-core:$WS/mvw-viewer"
-H=root@89.179.247.80; D=/home/suenot/production-warehouse
+[ -f ~/.config/mvw/env ] && . ~/.config/mvw/env   # MVW_DEPLOY_HOST=user@host (kept out of git)
+H=${MVW_DEPLOY_HOST:?set MVW_DEPLOY_HOST=user@host}; D=/home/suenot/production-warehouse
 SSH="ssh -p 4242 -o ConnectTimeout=20 -o ServerAliveInterval=15"
 log() { echo "$(date -u +%FT%TZ) $*"; }
 

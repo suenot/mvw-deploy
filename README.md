@@ -17,3 +17,11 @@ cp com.suenot.mvw-mac-sync.plist ~/Library/LaunchAgents/ && launchctl bootstrap 
 ```
 
 Log: `~/Library/Logs/mvw-mac-sync.log`. The Mac must be on.
+
+## Config
+
+Set the target in `~/.config/mvw/env` (not in git; read by `deploy.sh` and `mac-sync.sh`):
+
+```bash
+mkdir -p ~/.config/mvw && echo 'MVW_DEPLOY_HOST=user@your-server' > ~/.config/mvw/env
+```
